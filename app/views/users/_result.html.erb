@@ -11,6 +11,7 @@
         <% if current_user.can_add_stock?(@stock.ticker) %>
     <%= link_to "Add to my stocks", user_stocks_path(user: current_user, stock_ticker: @stock.ticker),
                                         class: "btn btn-sm btn-success", method: :post %>
+    </div>  
 <% else %>
     <span class="label label-default">
         Stock can not be added because you already added 
@@ -21,7 +22,6 @@
         this stock.
         <% end %>
     </span>
-<% end %>
-    </div>
+        <% end %>
 <% end %>
 
