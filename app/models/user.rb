@@ -8,6 +8,10 @@ class User < ApplicationRecord
   has_many :friendships
   has_many :friends, through: :friendships
   
+  def can_add_stock?(ticker_symbol)
+    under_stock_limit? && !stock_already_added?(ticker_symbol)
+  end
+  
   def stock_already_added?(ticker_symbol)
     stock = Stock.find_by_ticker(ticker_symbol)
     return false unless stock
@@ -16,10 +20,6 @@ class User < ApplicationRecord
   
   def under_stock_limit?
     (user_stocks.count < 10)
-  end
-  
-  def can_add_stock?(ticker_symbol)
-    under_stock_limit? && !stock_already_added?(ticker_symbol)
   end
   
   def full_name
@@ -49,6 +49,14 @@ class User < ApplicationRecord
   
   def self.matches(field_name, param)
     User.where("#{field_name} like?", "%#{param}%")
+  end
+  
+  def except_current_user(users)
+    users.reject{ |user| user.id == self.id }
+  end
+  
+  def not_friends_with?(friend_id)
+    friendships.where(friend_id: friend_id).count < 1
   end
 end
 
